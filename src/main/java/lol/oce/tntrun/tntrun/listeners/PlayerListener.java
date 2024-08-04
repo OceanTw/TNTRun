@@ -18,7 +18,7 @@ public class PlayerListener implements Listener {
         Player player = event.getPlayer();
         TNTPlayer tntPlayer = TNTRun.get().getPlayerManager().getPlayer(player.getUniqueId());
         if (tntPlayer == null) {
-            tntPlayer = new TNTPlayer(player.getUniqueId(), 0, 0, 0, false, null);
+            tntPlayer = new TNTPlayer(player, 0, 0, 0, false, null);
             TNTRun.get().getPlayerManager().addPlayer(tntPlayer);
         }
 
@@ -39,6 +39,9 @@ public class PlayerListener implements Listener {
         TNTPlayer tntPlayer = TNTRun.get().getPlayerManager().getPlayer(player.getUniqueId());
         if (tntPlayer != null) {
             TNTRun.get().getPlayerManager().removePlayer(tntPlayer);
+        }
+        if (tntPlayer.getMatch() != null) {
+            tntPlayer.getMatch().removePlayer(tntPlayer);
         }
     }
 }

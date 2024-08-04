@@ -2,7 +2,6 @@ package lol.oce.tntrun.tntrun.utils;
 
 import lol.oce.tntrun.tntrun.TNTRun;
 import lombok.Getter;
-import org.bukkit.block.data.type.TNT;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;

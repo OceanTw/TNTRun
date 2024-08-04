@@ -39,17 +39,17 @@ public class PlayerManager {
     }
 
     public TNTPlayer getPlayer(UUID uuid) {
-        return players.stream().filter(player -> player.getUuid().equals(uuid)).findFirst().orElseGet(() -> loadPlayer(uuid));
+        return players.stream().filter(player -> player.getPlayer().getUniqueId().equals(uuid)).findFirst().orElseGet(() -> loadPlayer(uuid));
     }
 
     private void savePlayer(TNTPlayer player) {
-        Document doc = new Document("uuid", player.getUuid().toString())
+        Document doc = new Document("uuid", player.getPlayer().getUniqueId().toString())
                 .append("gamesPlayed", player.getGamesPlayed())
                 .append("gamesWon", player.getGamesWon())
                 .append("gamesLost", player.getGamesLost())
                 .append("inGame", player.isInGame())
                 .append("match", player.getMatch() != null ? player.getMatch().getUuid().toString() : null);
-        Bson filter = eq("uuid", player.getUuid().toString());
+        Bson filter = eq("uuid", player.getPlayer().getUniqueId().toString());
         playerCollection.replaceOne(filter, doc, new ReplaceOptions().upsert(true));
     }
 
@@ -57,7 +57,7 @@ public class PlayerManager {
         Document doc = playerCollection.find(eq("uuid", uuid.toString())).first();
         if (doc != null) {
             TNTPlayer player = new TNTPlayer(
-                    uuid,
+                    TNTRun.get().getServer().getPlayer(uuid),
                     doc.getInteger("gamesPlayed"),
                     doc.getInteger("gamesWon"),
                     doc.getInteger("gamesLost"),

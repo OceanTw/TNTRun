@@ -12,15 +12,14 @@ import com.sk89q.worldedit.function.operation.Operations;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.world.World;
 import lol.oce.tntrun.tntrun.TNTRun;
+import lol.oce.tntrun.tntrun.players.TNTPlayer;
 import lombok.Builder;
 import lombok.Data;
 import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -30,7 +29,8 @@ public class Match {
 
     UUID uuid;
     String arenaSchematic;
-    List<Player> players;
+    List<TNTPlayer> players;
+    MatchStatus status;
 
     public void setup() throws IOException {
         World world = BukkitAdapter.adapt(Bukkit.getWorld("matches"));
@@ -54,13 +54,25 @@ public class Match {
         }
     }
 
-    public void addPlayer(Player player) {
+    public void addPlayer(TNTPlayer player) {
         players.add(player);
         if (players.size() >= TNTRun.get().getConfigManager().getSettingsFile().getConfiguration().getInt("match.min-players")) {
-            try {
-                setup();
-            } catch (IOException e) {
-                e.printStackTrace();
+            MatchManager matchManager = TNTRun.get().getMatchManager();
+            matchManager.startCountdown(this);
+        }
+    }
+
+    public void removePlayer(TNTPlayer player) {
+        players.remove(player);
+        if (players.size() < TNTRun.get().getConfigManager().getSettingsFile().getConfiguration().getInt("match.min-players")) {
+            status = MatchStatus.WAITING;
+        }
+        if (status == MatchStatus.INGAME) {
+            if (players.size() == 1) {
+                TNTPlayer winner = players.getFirst();
+                players.clear();
+                winner.getPlayer().sendMessage("You won the match!");
+                status = MatchStatus.ENDING;
             }
         }
     }

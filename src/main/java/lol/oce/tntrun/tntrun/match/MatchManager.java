@@ -1,6 +1,12 @@
 package lol.oce.tntrun.tntrun.match;
 
-import java.util.*;
+import lol.oce.tntrun.tntrun.TNTRun;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Random;
 
 public class MatchManager {
     private final List<Match> matches = new ArrayList<>();
@@ -8,14 +14,6 @@ public class MatchManager {
 
     public void addMatch(Match match) {
         matches.add(match);
-    }
-
-    public void removeMatch(Match match) {
-        matches.remove(match);
-    }
-
-    public Match getMatch(UUID id) {
-        return matches.stream().filter(match -> match.getUuid().equals(id)).findFirst().orElse(null);
     }
 
     public List<Match> getMatches() {
@@ -48,9 +46,28 @@ public class MatchManager {
     }
 
     // start a waiting match
-    public void startMatch(Match match) {
-        // Start the match
+    public void startCountdown(Match match) {
+        match.setStatus(MatchStatus.WAITING);
+        match.getPlayers().forEach(player -> player.getPlayer().sendMessage("Match starting in 30 seconds!"));
+        new BukkitRunnable() {
+            int seconds = 30;
+
+            @Override
+            public void run() {
+                if (seconds == 0) {
+                    match.setStatus(MatchStatus.INGAME);
+                    match.getPlayers().forEach(player -> player.getPlayer().sendMessage("Match has started!"));
+                    cancel();
+                    return;
+                }
+                if (seconds == 10 || seconds <= 5) {
+                    match.getPlayers().forEach(player -> player.getPlayer().sendMessage("Match starting in " + seconds + " seconds!"));
+                }
+                seconds--;
+            }
+        }.runTaskTimer(TNTRun.get(), 0, 20);
     }
+
 
 
 }

@@ -1,7 +1,6 @@
 package lol.oce.tntrun.tntrun.commands;
 
 import lol.oce.tntrun.tntrun.TNTRun;
-import lol.oce.tntrun.tntrun.listeners.PlayerListener;
 import lol.oce.tntrun.tntrun.match.Match;
 import lol.oce.tntrun.tntrun.match.MatchManager;
 import lol.oce.tntrun.tntrun.players.TNTPlayer;
@@ -17,7 +16,7 @@ public class JoinCommand implements CommandExecutor {
         Player player = (Player) commandSender;
         TNTPlayer tntPlayer = TNTRun.get().getPlayerManager().getPlayer(player.getUniqueId());
         if (tntPlayer == null) {
-            tntPlayer = new TNTPlayer(player.getUniqueId(), 0, 0, 0, false, null);
+            tntPlayer = new TNTPlayer(player, 0, 0, 0, false, null);
             TNTRun.get().getPlayerManager().addPlayer(tntPlayer);
         }
         if (tntPlayer.getMatch() != null) {
@@ -30,7 +29,7 @@ public class JoinCommand implements CommandExecutor {
             player.sendMessage("There are no matches available.");
             return true;
         }
-        match.addPlayer(player);
+        match.addPlayer(tntPlayer);
         player.sendMessage("You have joined a match!");
         return true;
     }

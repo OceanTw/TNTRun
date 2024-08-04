@@ -1,17 +1,15 @@
 package lol.oce.tntrun.tntrun.players;
 
 import lol.oce.tntrun.tntrun.match.Match;
-import lol.oce.tntrun.tntrun.match.MatchManager;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-
-import java.util.UUID;
+import org.bukkit.entity.Player;
 
 @Data
 @AllArgsConstructor
 public class TNTPlayer {
 
-    UUID uuid;
+    Player player;
     int gamesPlayed;
     int gamesWon;
     int gamesLost;

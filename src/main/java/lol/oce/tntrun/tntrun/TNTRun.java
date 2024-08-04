@@ -6,11 +6,11 @@ import lol.oce.tntrun.tntrun.listeners.ArenaSetupListener;
 import lol.oce.tntrun.tntrun.listeners.MatchListener;
 import lol.oce.tntrun.tntrun.match.Match;
 import lol.oce.tntrun.tntrun.match.MatchManager;
+import lol.oce.tntrun.tntrun.match.MatchStatus;
 import lol.oce.tntrun.tntrun.players.PlayerManager;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.lang.foreign.Arena;
 import java.util.ArrayList;
 import java.util.UUID;
 
@@ -44,6 +44,7 @@ public final class TNTRun extends JavaPlugin {
                     .setUuid(UUID.randomUUID())
                     .setArenaSchematic(matchManager.getArena())
                     .setPlayers(new ArrayList<>())
+                    .setStatus(MatchStatus.WAITING)
                     .build());
         }
 

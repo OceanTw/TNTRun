@@ -1,6 +1,7 @@
 package lol.oce.tntrun.tntrun.listeners;
 
 import lol.oce.tntrun.tntrun.TNTRun;
+import lol.oce.tntrun.tntrun.match.MatchStatus;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,9 @@ public class MatchListener implements Listener {
     @EventHandler
     public void onPlayerMove(PlayerMoveEvent event) {
         if (TNTRun.get().getPlayerManager().getPlayer(event.getPlayer().getUniqueId()).getMatch() == null) {
+            return;
+        }
+        if (TNTRun.get().getPlayerManager().getPlayer(event.getPlayer().getUniqueId()).getMatch().getStatus() != MatchStatus.INGAME) {
             return;
         }
         Block block = event.getPlayer().getLocation().subtract(0, 1, 0).getBlock();
