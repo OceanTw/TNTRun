@@ -1,0 +1,5 @@
+mongo:
+  url: "mongodb://localhost:27017"
+
+match:
+  min-players: 8
