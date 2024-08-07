@@ -1,4 +1,4 @@
-package lol.oce.tntrun.tntrun.utils;
+package lol.oce.tntrun.utils;
 
 import org.bukkit.ChatColor;
 

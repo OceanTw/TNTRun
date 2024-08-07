@@ -1,16 +1,18 @@
-package lol.oce.tntrun.tntrun.players;
+package lol.oce.tntrun.players;
 
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.ReplaceOptions;
-import lol.oce.tntrun.tntrun.TNTRun;
+import lol.oce.tntrun.TNTRun;
+import lol.oce.tntrun.match.Match;
 import lombok.Getter;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
 
@@ -21,6 +23,7 @@ public class PlayerManager {
 
     private final List<TNTPlayer> players = new ArrayList<>();
     private final MongoCollection<Document> playerCollection;
+    private final HashMap<TNTPlayer, Match> playerMatch = new HashMap<>();
 
     public PlayerManager() {
         String mongoUrl = TNTRun.get().getConfigManager().getSettingsFile().getConfiguration().getString("mongo.url");
@@ -46,9 +49,7 @@ public class PlayerManager {
         Document doc = new Document("uuid", player.getPlayer().getUniqueId().toString())
                 .append("gamesPlayed", player.getGamesPlayed())
                 .append("gamesWon", player.getGamesWon())
-                .append("gamesLost", player.getGamesLost())
-                .append("inGame", player.isInGame())
-                .append("match", player.getMatch() != null ? player.getMatch().getUuid().toString() : null);
+                .append("gamesLost", player.getGamesLost());
         Bson filter = eq("uuid", player.getPlayer().getUniqueId().toString());
         playerCollection.replaceOne(filter, doc, new ReplaceOptions().upsert(true));
     }
@@ -60,9 +61,7 @@ public class PlayerManager {
                     TNTRun.get().getServer().getPlayer(uuid),
                     doc.getInteger("gamesPlayed"),
                     doc.getInteger("gamesWon"),
-                    doc.getInteger("gamesLost"),
-                    doc.getBoolean("inGame"),
-                    null // Load match if necessary
+                    doc.getInteger("gamesLost")
             );
             players.add(player);
             return player;

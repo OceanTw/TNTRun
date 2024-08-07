@@ -1,6 +1,6 @@
-package lol.oce.tntrun.tntrun.utils;
+package lol.oce.tntrun.utils;
 
-import lol.oce.tntrun.tntrun.TNTRun;
+import lol.oce.tntrun.TNTRun;
 import lombok.Getter;
 import org.bukkit.configuration.file.YamlConfiguration;
 

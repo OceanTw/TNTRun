@@ -1,7 +1,7 @@
-package lol.oce.tntrun.tntrun.configs;
+package lol.oce.tntrun.configs;
 
-import lol.oce.tntrun.tntrun.TNTRun;
-import lol.oce.tntrun.tntrun.utils.ConfigFile;
+import lol.oce.tntrun.TNTRun;
+import lol.oce.tntrun.utils.ConfigFile;
 import lombok.Getter;
 
 @Getter
@@ -12,7 +12,6 @@ public class ConfigManager {
     private ConfigFile localeFile;
     private ConfigFile scoreboardFile;
     private ConfigFile menuFile;
-    private ConfigFile dataFile;
 
 
     public ConfigManager() {
@@ -24,6 +23,5 @@ public class ConfigManager {
         this.localeFile = new ConfigFile("locale");
         this.scoreboardFile = new ConfigFile("scoreboard");
         this.menuFile = new ConfigFile("menu");
-        this.dataFile = new ConfigFile("data");
     }
 }

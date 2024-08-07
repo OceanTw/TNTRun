@@ -1,8 +1,8 @@
-package lol.oce.tntrun.tntrun.listeners;
+package lol.oce.tntrun.listeners;
 
-import lol.oce.tntrun.tntrun.TNTRun;
-import lol.oce.tntrun.tntrun.match.Match;
-import lol.oce.tntrun.tntrun.players.TNTPlayer;
+import lol.oce.tntrun.match.Match;
+import lol.oce.tntrun.TNTRun;
+import lol.oce.tntrun.players.TNTPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,19 +15,22 @@ public class PlayerListener implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
-        Player player = event.getPlayer();
-        TNTPlayer tntPlayer = TNTRun.get().getPlayerManager().getPlayer(player.getUniqueId());
-        if (tntPlayer == null) {
-            tntPlayer = new TNTPlayer(player, 0, 0, 0, false, null);
+        Player player = event.getPlayer();;
+        if (TNTRun.get().getPlayerManager().getPlayer(player.getUniqueId()) == null) {
+            TNTPlayer tntPlayer = new TNTPlayer(player, 0, 0, 0);
+            TNTRun.get().getPlayerManager().addPlayer(tntPlayer);
+        } else {
+            TNTPlayer tntPlayer = TNTRun.get().getPlayerManager().getPlayer(player.getUniqueId());
+            tntPlayer.setPlayer(player);
             TNTRun.get().getPlayerManager().addPlayer(tntPlayer);
         }
 
-        // create a new match when 10 players are online, another one when 20, etc
+
         if (TNTRun.get().getPlayerManager().getPlayers().size() % 10 == 0) {
-            // create a new match
+
             Match.builder()
                     .setUuid(player.getUniqueId())
-                    .setArenaSchematic("arena")
+                    .setArenaSchematic(TNTRun.get().getMatchManager().getArena())
                     .setPlayers(new ArrayList<>())
                     .build();
         }
@@ -39,9 +42,7 @@ public class PlayerListener implements Listener {
         TNTPlayer tntPlayer = TNTRun.get().getPlayerManager().getPlayer(player.getUniqueId());
         if (tntPlayer != null) {
             TNTRun.get().getPlayerManager().removePlayer(tntPlayer);
-        }
-        if (tntPlayer.getMatch() != null) {
-            tntPlayer.getMatch().removePlayer(tntPlayer);
+            TNTRun.get().getPlayerManager().getPlayerMatch().remove(tntPlayer);
         }
     }
 }

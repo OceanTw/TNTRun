@@ -1,5 +1,9 @@
 name: TNTRun
-version: '${project.version}'
-main: lol.oce.tntrun.tntrun.TNTRun
+version: '1.0'
+main: lol.oce.tntrun.TNTRun
 depend:
   - FastAsyncWorldEdit
+api-version: 1.21
+commands:
+  arena:
+  join:

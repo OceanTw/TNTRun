@@ -1,8 +1,10 @@
-package lol.oce.tntrun.tntrun.match;
+package lol.oce.tntrun.match;
 
-import lol.oce.tntrun.tntrun.TNTRun;
+import lol.oce.tntrun.TNTRun;
+import lombok.Getter;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -10,9 +12,30 @@ import java.util.Random;
 
 public class MatchManager {
     private final List<Match> matches = new ArrayList<>();
+    @Getter
     private final HashMap<String, Boolean> schematics = new HashMap<>();
 
+    public void load() {
+        File folder = new File(TNTRun.get().getDataFolder(), "arenas");
+        if (!folder.exists()) {
+            folder.mkdir();
+        }
+        for (File file : folder.listFiles()) {
+            schematics.put(file.getName().replace(".schem", ""), false);
+        }
+    }
+
+    public File getSchematicFile(String schematic) {
+        File folder = new File(TNTRun.get().getDataFolder(), "arenas");
+        return new File(folder, schematic + ".schem");
+    }
+
     public void addMatch(Match match) {
+        try {
+            match.setup();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         matches.add(match);
     }
 
@@ -20,10 +43,11 @@ public class MatchManager {
         return matches;
     }
 
-    // get a arena that hasn't been used yet, if all arenas are used, choose a random one
+
     public String getArena() {
         for (String schematic : schematics.keySet()) {
-            // if all arenas are used, choose a random one
+
+            schematic = schematic.replace(".schem", "");
             if (!schematics.get(schematic)) {
                 schematics.put(schematic, true);
                 return schematic;
@@ -45,7 +69,7 @@ public class MatchManager {
         return null;
     }
 
-    // start a waiting match
+
     public void startCountdown(Match match) {
         match.setStatus(MatchStatus.WAITING);
         match.getPlayers().forEach(player -> player.getPlayer().sendMessage("Match starting in 30 seconds!"));
@@ -57,6 +81,7 @@ public class MatchManager {
                 if (seconds == 0) {
                     match.setStatus(MatchStatus.INGAME);
                     match.getPlayers().forEach(player -> player.getPlayer().sendMessage("Match has started!"));
+                    match.getPlayers().forEach(player -> player.getPlayer().teleport(match.getSpawn()));
                     cancel();
                     return;
                 }
@@ -67,7 +92,6 @@ public class MatchManager {
             }
         }.runTaskTimer(TNTRun.get(), 0, 20);
     }
-
 
 
 }
